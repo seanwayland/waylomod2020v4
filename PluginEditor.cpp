@@ -15,7 +15,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (800,800);
+    setSize (1800,1800);
     auto& params = processor.getParameters();
     
     
@@ -207,7 +207,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     mDelayThreeFeedbackSlider.onDragEnd = [delayThreeFeedbackParameter] {delayThreeFeedbackParameter->endChangeGesture(); };
     
     
-    /***
+    
     
     
     juce::AudioParameterFloat* delayFourTimeParameter = (juce::AudioParameterFloat*)params.getUnchecked(16);
@@ -269,7 +269,6 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     mDelayFourFeedbackSlider.onDragStart = [delayFourFeedbackParameter] {delayFourFeedbackParameter->beginChangeGesture(); };
     mDelayFourFeedbackSlider.onDragEnd = [delayFourFeedbackParameter] {delayFourFeedbackParameter->endChangeGesture(); };
      
-     ***/
     
     
     

@@ -73,6 +73,12 @@ private:
     float mLFOphaseThree;
     float mLFOrateThree;
     
+    float mDelayFourTimeInSamples;
+    float mDelayFourReadHead;
+    float feedbackFour;
+    float mLFOphaseFour;
+    float mLFOrateFour;
+    
 
     
     
@@ -95,6 +101,12 @@ private:
     juce::AudioParameterFloat* mDelayThreeModDepthParameter;
     juce::AudioParameterFloat* mDelayThreeModRateParameter;
     juce::AudioParameterFloat* mDelayThreeFeedbackParameter;
+    
+    juce::AudioParameterFloat* mDelayFourTimeParameter;
+    juce::AudioParameterFloat* mDelayFourGainParameter;
+    juce::AudioParameterFloat* mDelayFourModDepthParameter;
+    juce::AudioParameterFloat* mDelayFourModRateParameter;
+    juce::AudioParameterFloat* mDelayFourFeedbackParameter;
     
 
     
@@ -137,6 +149,18 @@ private:
     
     float mfeedbackLeftThree;
     float mfeedbackRightThree;
+    
+    float mLastInputGainFour  = 0.0f;
+    float mDelayTimeSmoothedFour;
+    
+    float* mCircularBufferRightFour;
+    float* mCircularBufferLeftFour;
+    
+    int mCircularBufferWriteHeadFour;
+    
+    
+    float mfeedbackLeftFour;
+    float mfeedbackRightFour;
     
     
     
