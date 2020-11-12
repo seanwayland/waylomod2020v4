@@ -376,18 +376,18 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         mfeedbackLeft = delay_sample_Left* *mDelayOneFeedbackParameter;
         mfeedbackRight = delay_sample_Right* *mDelayOneFeedbackParameter;
         
-        /**
-        mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
+        
+       // mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
         mfeedbackRightTwo = delay_sample_RightTwo* *mDelayTwoFeedbackParameter;
-         ***/
-         mfeedbackLeftTwo = mfeedbackRightTwo =0;
+        
+         mfeedbackLeftTwo =0;
         
         // add delay into live audio buffer
         
-        buffer.setSample(1, i, buffer.getSample(0, i)* *mDryGainParameter
+        buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter
         + delay_sample_LeftTwo* *mDelayTwoGainParameter+ delay_sample_RightTwo* *mDelayTwoGainParameter);
         
-        buffer.setSample(0, i, buffer.getSample(1, i)* *mDryGainParameter +
+        buffer.setSample(0, i, buffer.getSample(0, i)* *mDryGainParameter +
         delay_sample_Left* *mDelayOneGainParameter+ delay_sample_Right* *mDelayOneGainParameter);
       
         
