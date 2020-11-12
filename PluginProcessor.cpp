@@ -320,10 +320,10 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         mDelayTwoTimeInSamples = dtimeTwo + getSampleRate() * mDelayTimeSmoothedTwo ;
         
         // shove some of the input into the circular buffer also add some of the feedback
-        mCircularBufferLeft[mCircularBufferWriteHead] = LeftChannel[i];
+        mCircularBufferLeft[mCircularBufferWriteHead] = LeftChannel[i] +mfeedbackLeft;
         mCircularBufferRight[mCircularBufferWriteHead] = RightChannel[i] + mfeedbackRight;
         mCircularBufferLeftTwo[mCircularBufferWriteHeadTwo] = LeftChannel[i] + mfeedbackLeftTwo;
-        mCircularBufferRightTwo[mCircularBufferWriteHeadTwo] = RightChannel[i];
+        mCircularBufferRightTwo[mCircularBufferWriteHeadTwo] = RightChannel[i] + mfeedbackRightTwo;
         
         
         
@@ -372,16 +372,26 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         float delay_sample_RightTwo = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferRightTwo[readHeadXTwo], mCircularBufferRightTwo[readHeadX1Two], readHeadFloatTwo);
         
         // store some delay for feedback
+        
+        mfeedbackLeft = delay_sample_Left* *mDelayOneFeedbackParameter;
         mfeedbackRight = delay_sample_Right* *mDelayOneFeedbackParameter;
-        mfeedbackRightTwo = delay_sample_Left* *mDelayTwoFeedbackParameter;
+        
+        /**
+        mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
+        mfeedbackRightTwo = delay_sample_RightTwo* *mDelayTwoFeedbackParameter;
+         ***/
+         mfeedbackLeftTwo = mfeedbackRightTwo =0;
         
         // add delay into live audio buffer
         
-        buffer.setSample(0, i, buffer.getSample(0, i)* *mDryGainParameter);
-        buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter + delay_sample_Right* *mDelayOneGainParameter);
-        buffer.setSample(0, i, buffer.getSample(0, i)* *mDryGainParameter + delay_sample_LeftTwo* *mDelayTwoGainParameter);
-        buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter);
-         
+        buffer.setSample(1, i, buffer.getSample(0, i)* *mDryGainParameter
+        + delay_sample_LeftTwo* *mDelayTwoGainParameter+ delay_sample_RightTwo* *mDelayTwoGainParameter);
+        
+        buffer.setSample(0, i, buffer.getSample(1, i)* *mDryGainParameter +
+        delay_sample_Left* *mDelayOneGainParameter+ delay_sample_Right* *mDelayOneGainParameter);
+      
+        
+        
         /***
         buffer.setSample(0, i, buffer.getSample(0, i)* *mDryGainParameter + delay_sample_LeftTwo* *mDelayTwoGainParameter);
         buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter + delay_sample_Right* *mDelayOneGainParameter);
