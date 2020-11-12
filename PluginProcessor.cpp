@@ -377,10 +377,10 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         mfeedbackRight = delay_sample_Right* *mDelayOneFeedbackParameter;
         
         
-       // mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
+        mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
         mfeedbackRightTwo = delay_sample_RightTwo* *mDelayTwoFeedbackParameter;
         
-         mfeedbackLeftTwo =0;
+        // mfeedbackLeftTwo =0;
         
         // add delay into live audio buffer
         
