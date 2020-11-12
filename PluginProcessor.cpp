@@ -35,11 +35,20 @@ Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
     addParameter(mDelayTwoModRateParameter = new juce::AudioParameterFloat("delaytwomodDepth", "Delay Two Mod Depth", 0, 1, 0.5));
     addParameter(mDelayTwoFeedbackParameter = new juce::AudioParameterFloat("feedbacktwo", "Feedback Two", 0.0, 0.98, 0.5));
     
+    addParameter(mDelayThreeTimeParameter = new juce::AudioParameterFloat("delay three delaytime", "Delay Three Delay Time", 0.0001, MAX_DELAY_TIME, 0.5));
+    addParameter(mDelayThreeGainParameter = new juce::AudioParameterFloat("delaythreegain", "Delay Three Gain", 0.0, 1.0, 0.5));
+    addParameter(mDelayThreeModDepthParameter = new juce::AudioParameterFloat("delaythreemodDepth", "Delay Three Mod Depth", 0, 1, 0.5));
+    addParameter(mDelayThreeModRateParameter = new juce::AudioParameterFloat("delaythreemodDepth", "Delay Two Three Depth", 0, 1, 0.5));
+    addParameter(mDelayThreeFeedbackParameter = new juce::AudioParameterFloat("feedbackthree", "Feedback Two", 0.0, 0.98, 0.5));
+    
+
     
     mCircularBufferLeft = nullptr;
     mCircularBufferRight = nullptr;
     mCircularBufferWriteHead = 0;
+    
     mCircularBufferLength = 0;
+    
     mDelayTimeInSamples = 0.0;
     mDelayReadHead = 0.0;
     
@@ -49,6 +58,16 @@ Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
     
     mDelayTwoTimeInSamples = 0.0;
     mDelayTwoReadHead = 0.0;
+    
+    mCircularBufferLeftThree = nullptr;
+    mCircularBufferRightThree = nullptr;
+    mCircularBufferWriteHeadThree = 0;
+    
+ 
+    mDelayThreeTimeInSamples = 0.0;
+    mDelayThreeReadHead = 0.0;
+    
+
     
     
     feedback = 0.5;
@@ -62,6 +81,17 @@ Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
     mDelayTimeSmoothedTwo = 1;
     mLFOphaseTwo = 0;
     mLFOrateTwo = 0.3f;
+    
+    feedbackThree = 0.5;
+    mfeedbackLeftThree = 0.0;
+    mDelayTimeSmoothedThree = 1;
+    mLFOphaseThree = 0;
+    mLFOrateThree = 0.3f;
+    
+
+    
+    
+
 }
 
 Waylomod2020v4AudioProcessor::~Waylomod2020v4AudioProcessor()
@@ -89,6 +119,20 @@ Waylomod2020v4AudioProcessor::~Waylomod2020v4AudioProcessor()
         delete [] mCircularBufferRightTwo;
         mCircularBufferRightTwo = nullptr;
     }
+    
+    if (mCircularBufferLeftThree != nullptr ) {
+        delete [] mCircularBufferLeftThree;
+        mCircularBufferLeftThree = nullptr;
+    }
+    
+    
+    
+    if (mCircularBufferRightThree != nullptr ) {
+        delete [] mCircularBufferRightThree;
+        mCircularBufferRightThree = nullptr;
+    }
+    
+    
 }
 
 //==============================================================================
@@ -166,6 +210,9 @@ void Waylomod2020v4AudioProcessor::prepareToPlay (double sampleRate, int samples
     mLFOrate = 0.3f;
     mLFOphaseTwo = 0;
     mLFOrateTwo = 0.3f;
+    mLFOphaseThree = 0;
+    mLFOrateThree = 0.3f;
+
     
     
 
@@ -214,10 +261,36 @@ void Waylomod2020v4AudioProcessor::prepareToPlay (double sampleRate, int samples
         mCircularBufferRightTwo = new float[mCircularBufferLength];
     }
     
+    if (mCircularBufferLeftThree != nullptr ) {
+        delete [] mCircularBufferLeftThree;
+        mCircularBufferLeftThree = nullptr;
+    }
+    
+    if (mCircularBufferLeftThree == nullptr ) {
+        mCircularBufferLeftThree = new float[mCircularBufferLength];
+    }
+    
+    if (mCircularBufferRightThree != nullptr ) {
+        delete [] mCircularBufferRightThree;
+        mCircularBufferRightThree = nullptr;
+    }
+    
+    if (mCircularBufferRightThree == nullptr ) {
+        mCircularBufferRightThree = new float[mCircularBufferLength];
+    }
+    
+    
+    
+
+    
     mCircularBufferWriteHead = 0;
     mDelayTimeSmoothed = 0.5;
     mCircularBufferWriteHeadTwo = 0;
     mDelayTimeSmoothedTwo = 0.5;
+    
+    mCircularBufferWriteHeadThree = 0;
+    mDelayTimeSmoothedThree = 0.5;
+
     
     
     
@@ -287,11 +360,16 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         
         float lfoOut = sin(2*M_PI * mLFOphase);
         float lfoOutTwo = sin(2*M_PI * mLFOphaseTwo);
+        float lfoOutThree = sin(2*M_PI * mLFOphaseThree);
+
         
         // move the LFO phase thru the sine wave
         
         mLFOphase += *mDelayOneModRateParameter / getSampleRate();
         mLFOphaseTwo += *mDelayTwoModRateParameter / getSampleRate();
+        mLFOphaseThree += *mDelayThreeModRateParameter / getSampleRate();
+
+
         
         // LFO phase is moving between zero and one
         if ( mLFOphase > 1){
@@ -300,36 +378,59 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         if ( mLFOphaseTwo > 1){
             mLFOphaseTwo -= 1;
         }
+        
+        if ( mLFOphaseThree > 1){
+            mLFOphaseThree -= 1;
+        }
+
         // attenuate the "depth" of the modulaton
         lfoOut *= *mDelayOneModDepthParameter;
         lfoOutTwo *= *mDelayTwoModDepthParameter;
+        lfoOutThree *= *mDelayThreeModDepthParameter;
+
         
         // convert -1 to 1 to changes in delay time of .005 min and .03 max
         float lfoOutMapped = juce::jmap(lfoOut,-1.f,1.f,0.005f, 0.03f);
         float lfoOutMappedTwo = juce::jmap(lfoOutTwo,-1.f,1.f,0.005f, 0.03f);
+        float lfoOutMappedThree = juce::jmap(lfoOutThree,-1.f,1.f,0.001f, 0.05f);
+
         
         
         // smoothly change the dely time
         mDelayTimeSmoothed = mDelayTimeSmoothed - 0.001*(mDelayTimeSmoothed - lfoOutMapped);
         mDelayTimeSmoothedTwo = mDelayTimeSmoothedTwo - 0.001*(mDelayTimeSmoothedTwo - lfoOutMappedTwo);
+        mDelayTimeSmoothedThree = mDelayTimeSmoothedThree - 0.001*(mDelayTimeSmoothedThree - lfoOutMappedThree);
+
+        
+        
         // get the value of the delay time knob as an in in samples
         int dtime = static_cast<int>(*mDelayOneTimeParameter*getSampleRate());
         int dtimeTwo = static_cast<int>(*mDelayTwoTimeParameter*getSampleRate());
+        int dtimeThree = static_cast<int>(*mDelayThreeTimeParameter*getSampleRate());
+
+        
         // add the modulated delay time to the value the delay time is set to with the slider
         mDelayTimeInSamples = dtime + getSampleRate() * mDelayTimeSmoothed ;
         mDelayTwoTimeInSamples = dtimeTwo + getSampleRate() * mDelayTimeSmoothedTwo ;
+        mDelayThreeTimeInSamples = dtimeThree + getSampleRate() * mDelayTimeSmoothedThree ;
+
+        
         
         // shove some of the input into the circular buffer also add some of the feedback
         mCircularBufferLeft[mCircularBufferWriteHead] = LeftChannel[i] +mfeedbackLeft;
         mCircularBufferRight[mCircularBufferWriteHead] = RightChannel[i] + mfeedbackRight;
         mCircularBufferLeftTwo[mCircularBufferWriteHeadTwo] = LeftChannel[i] + mfeedbackLeftTwo;
         mCircularBufferRightTwo[mCircularBufferWriteHeadTwo] = RightChannel[i] + mfeedbackRightTwo;
-        
-        
+        mCircularBufferLeftThree[mCircularBufferWriteHeadThree] = LeftChannel[i] + mfeedbackLeftThree;
+        mCircularBufferRightThree[mCircularBufferWriteHeadThree] = RightChannel[i] + mfeedbackRightThree;
+
+
         
         // move the read head on the circular to the new delay position
         mDelayReadHead = mCircularBufferWriteHead - mDelayTimeInSamples;
         mDelayTwoReadHead = mCircularBufferWriteHeadTwo - mDelayTwoTimeInSamples;
+        mDelayThreeReadHead = mCircularBufferWriteHeadThree - mDelayThreeTimeInSamples;
+
         
         // if read head is below zero wrap around
         if (mDelayReadHead < 0){
@@ -339,6 +440,10 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         if (mDelayTwoReadHead < 0){
             mDelayTwoReadHead += mCircularBufferLength;
         }
+        if (mDelayThreeReadHead < 0){
+            mDelayThreeReadHead += mCircularBufferLength;
+        }
+        
         
         // get the integer part of the read head
         int readHeadX = (int)mDelayReadHead;
@@ -354,6 +459,15 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         // next integer sample position
         int readHeadX1Two = readHeadXTwo + 1;
         
+        // get the integer part of the read head
+        int readHeadXThree = (int)mDelayThreeReadHead;
+        // get the part of the readHead after the decimal point
+        float readHeadFloatThree = mDelayThreeReadHead - readHeadXThree;
+        // next integer sample position
+        int readHeadX1Three = readHeadXThree + 1;
+        
+
+        
         
         
         // if next sample position is outside the buffer
@@ -365,30 +479,48 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
             readHeadX1Two -= mCircularBufferLength;
         }
         
+        if ( readHeadX1Three >= mCircularBufferLength){
+            readHeadX1Three -= mCircularBufferLength;
+        }
+        
+
+        
         // get the interpolated value of the delayed sample from the circular buffer
         float delay_sample_Left = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferLeft[readHeadX], mCircularBufferLeft[readHeadX1], readHeadFloat);
         float delay_sample_Right = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferRight[readHeadX], mCircularBufferRight[readHeadX1], readHeadFloat);
         float delay_sample_LeftTwo = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferLeftTwo[readHeadXTwo], mCircularBufferLeftTwo[readHeadX1Two], readHeadFloatTwo);
         float delay_sample_RightTwo = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferRightTwo[readHeadXTwo], mCircularBufferRightTwo[readHeadX1Two], readHeadFloatTwo);
+        float delay_sample_LeftThree = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferLeftThree[readHeadXThree], mCircularBufferLeftThree[readHeadX1Three], readHeadFloatThree);
+        float delay_sample_RightThree = Waylomod2020v4AudioProcessor::linInterp(mCircularBufferRightThree[readHeadXThree], mCircularBufferRightThree[readHeadX1Three], readHeadFloatThree);
+        
+
         
         // store some delay for feedback
         
         mfeedbackLeft = delay_sample_Left* *mDelayOneFeedbackParameter;
         mfeedbackRight = delay_sample_Right* *mDelayOneFeedbackParameter;
-        
-        
         mfeedbackLeftTwo = delay_sample_LeftTwo* *mDelayTwoFeedbackParameter;
         mfeedbackRightTwo = delay_sample_RightTwo* *mDelayTwoFeedbackParameter;
+        mfeedbackLeftThree = delay_sample_LeftThree* *mDelayThreeFeedbackParameter;
+        mfeedbackRightThree = delay_sample_RightThree* *mDelayThreeFeedbackParameter;
+
         
-        // mfeedbackLeftTwo =0;
+        //mfeedbackLeftThree = mfeedbackRightThree = 0;
         
         // add delay into live audio buffer
         
-        buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter
-        + delay_sample_LeftTwo* *mDelayTwoGainParameter+ delay_sample_RightTwo* *mDelayTwoGainParameter);
+
         
         buffer.setSample(0, i, buffer.getSample(0, i)* *mDryGainParameter +
-        delay_sample_Left* *mDelayOneGainParameter+ delay_sample_Right* *mDelayOneGainParameter);
+        delay_sample_Left* *mDelayOneGainParameter+ delay_sample_Right* *mDelayOneGainParameter
+        +delay_sample_LeftThree* *mDelayThreeGainParameter+ delay_sample_RightThree* *mDelayThreeGainParameter
+                         
+                         
+                         
+                         );
+        
+        buffer.setSample(1, i, buffer.getSample(1, i)* *mDryGainParameter
+                         + delay_sample_LeftTwo* *mDelayTwoGainParameter+ delay_sample_RightTwo* *mDelayTwoGainParameter);
       
         
         
@@ -402,6 +534,8 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         // increment the buffer write head
         mCircularBufferWriteHead ++;
         mCircularBufferWriteHeadTwo ++;
+        mCircularBufferWriteHeadThree ++;
+
         
         // wrap around if needed
         if (mCircularBufferWriteHead == mCircularBufferLength){
@@ -410,9 +544,16 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
         if (mCircularBufferWriteHeadTwo == mCircularBufferLength){
             mCircularBufferWriteHeadTwo = 0;
         }
+       if (mCircularBufferWriteHeadThree == mCircularBufferLength){
+            mCircularBufferWriteHeadThree = 0;
+        }
+
+        
+        //end main processing loop
     }
     
 
+    // end process block 
     
 }
 
