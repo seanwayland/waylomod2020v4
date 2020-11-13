@@ -60,13 +60,15 @@ private:
     juce::Slider mDelayFourModRateSlider;
     juce::Slider mDelayFourFeedbackSlider;
     
-/***
+
     
     juce::Slider mDelayFiveTimeSlider;
     juce::Slider mDelayFiveGainSlider;
     juce::Slider mDelayFiveModDepthSlider;
     juce::Slider mDelayFiveModRateSlider;
     juce::Slider mDelayFiveFeedbackSlider;
+    
+    /***
     
     juce::Slider mDelaySixTimeSlider;
     juce::Slider mDelaySixGainSlider;
