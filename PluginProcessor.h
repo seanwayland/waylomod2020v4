@@ -85,6 +85,14 @@ private:
     float mLFOphaseFive;
     float mLFOrateFive;
     
+    float mDelaySixTimeInSamples;
+    float mDelaySixReadHead;
+    float feedbackSix;
+    float mLFOphaseSix;
+    float mLFOrateSix;
+    
+
+    
 
     
 
@@ -121,6 +129,12 @@ private:
     juce::AudioParameterFloat* mDelayFiveModDepthParameter;
     juce::AudioParameterFloat* mDelayFiveModRateParameter;
     juce::AudioParameterFloat* mDelayFiveFeedbackParameter;
+    
+    juce::AudioParameterFloat* mDelaySixTimeParameter;
+    juce::AudioParameterFloat* mDelaySixGainParameter;
+    juce::AudioParameterFloat* mDelaySixModDepthParameter;
+    juce::AudioParameterFloat* mDelaySixModRateParameter;
+    juce::AudioParameterFloat* mDelaySixFeedbackParameter;
     
 
     
@@ -184,10 +198,25 @@ private:
     
     int mCircularBufferWriteHeadFive;
     
-    int mCircularBufferLengthFive;
+
     
     float mfeedbackLeftFive;
     float mfeedbackRightFive;
+    
+    float mLastInputGainSix  = 0.0f;
+    float mDelayTimeSmoothedSix;
+    
+    float* mCircularBufferRightSix;
+    float* mCircularBufferLeftSix;
+    
+    int mCircularBufferWriteHeadSix;
+    
+
+    
+    float mfeedbackLeftSix;
+    float mfeedbackRightSix;
+    
+
     
     
     
