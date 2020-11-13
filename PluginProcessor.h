@@ -91,6 +91,18 @@ private:
     float mLFOphaseSix;
     float mLFOrateSix;
     
+    float mDelaySevenTimeInSamples;
+    float mDelaySevenReadHead;
+    float feedbackSeven;
+    float mLFOphaseSeven;
+    float mLFOrateSeven;
+    
+    float mDelayEightTimeInSamples;
+    float mDelayEightReadHead;
+    float feedbackEight;
+    float mLFOphaseEight;
+    float mLFOrateEight;
+    
 
     
 
@@ -135,6 +147,18 @@ private:
     juce::AudioParameterFloat* mDelaySixModDepthParameter;
     juce::AudioParameterFloat* mDelaySixModRateParameter;
     juce::AudioParameterFloat* mDelaySixFeedbackParameter;
+    
+    juce::AudioParameterFloat* mDelaySevenTimeParameter;
+    juce::AudioParameterFloat* mDelaySevenGainParameter;
+    juce::AudioParameterFloat* mDelaySevenModDepthParameter;
+    juce::AudioParameterFloat* mDelaySevenModRateParameter;
+    juce::AudioParameterFloat* mDelaySevenFeedbackParameter;
+    
+    juce::AudioParameterFloat* mDelayEightTimeParameter;
+    juce::AudioParameterFloat* mDelayEightGainParameter;
+    juce::AudioParameterFloat* mDelayEightModDepthParameter;
+    juce::AudioParameterFloat* mDelayEightModRateParameter;
+    juce::AudioParameterFloat* mDelayEightFeedbackParameter;
     
 
     
@@ -215,6 +239,36 @@ private:
     
     float mfeedbackLeftSix;
     float mfeedbackRightSix;
+    
+    
+    float mLastInputGainSeven  = 0.0f;
+    float mDelayTimeSmoothedSeven;
+    
+    float* mCircularBufferRightSeven;
+    float* mCircularBufferLeftSeven;
+    
+    int mCircularBufferWriteHeadSeven;
+    
+
+    
+    float mfeedbackLeftSeven;
+    float mfeedbackRightSeven;
+    
+    
+    
+    float mLastInputGainEight  = 0.0f;
+    float mDelayTimeSmoothedEight;
+    
+    float* mCircularBufferRightEight;
+    float* mCircularBufferLeftEight;
+    
+    int mCircularBufferWriteHeadEight;
+    
+
+    
+    float mfeedbackLeftEight;
+    float mfeedbackRightEight;
+    
     
 
     

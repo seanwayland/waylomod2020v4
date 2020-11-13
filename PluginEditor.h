@@ -76,7 +76,7 @@ private:
     juce::Slider mDelaySixModRateSlider;
     juce::Slider mDelaySixFeedbackSlider;
     
-    /***
+
     
     juce::Slider mDelaySevenTimeSlider;
     juce::Slider mDelaySevenGainSlider;
@@ -90,7 +90,6 @@ private:
     juce::Slider mDelayEightModRateSlider;
     juce::Slider mDelayEightFeedbackSlider;
      
-     ***/
-
+ 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Waylomod2020v4AudioProcessorEditor)
 };
