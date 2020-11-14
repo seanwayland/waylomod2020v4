@@ -55,6 +55,9 @@ public:
     float linInterp(float sample_x, float sample_x1, float inPhase);
 
 private:
+    //==============================================================================
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Waylomod2020v4AudioProcessor)
+    
     float mDelayTimeInSamples;
     float mDelayReadHead;
     float feedback;
@@ -103,11 +106,11 @@ private:
     float mLFOphaseEight;
     float mLFOrateEight;
     
-
     
-
     
-
+    
+    
+    
     
     
     juce::AudioParameterFloat* mDelayOneTimeParameter;
@@ -160,15 +163,35 @@ private:
     juce::AudioParameterFloat* mDelayEightModRateParameter;
     juce::AudioParameterFloat* mDelayEightFeedbackParameter;
     
-
+    float mCircularBufferLeft[96000] = {  };
+    float mCircularBufferRight[96000] = {  };
+    float mCircularBufferLeftTwo[96000] = {  };
+    float mCircularBufferRightTwo[96000] = {  };
+    float mCircularBufferLeftThree[96000] = {  };
+    float mCircularBufferRightThree[96000] = {  };
+    float mCircularBufferLeftFour[96000] = {  };
+    float mCircularBufferRightFour[96000] = {  };
+    float mCircularBufferLeftFive[96000] = {  };
+    float mCircularBufferRightFive[96000] = {  };
+    float mCircularBufferLeftSix[96000] = {  };
+    float mCircularBufferRightSix[96000] = {  };
+    float mCircularBufferLeftSeven[96000] = {  };
+    float mCircularBufferRightSeven[96000] = {  };
+    float mCircularBufferLeftEight[96000] = {  };
+    float mCircularBufferRightEight[96000] = {  };
+    
+    
     
     
     
     float mLastInputGain  = 0.0f;
     float mDelayTimeSmoothed;
     
-    float* mCircularBufferRight;
-    float* mCircularBufferLeft;
+   // float* mCircularBufferRight;
+  //  float* mCircularBufferLeft;
+    
+
+    float arr2[10] = { 0 };
     
     int mCircularBufferWriteHead;
     
@@ -180,8 +203,8 @@ private:
     float mLastInputGainTwo  = 0.0f;
     float mDelayTimeSmoothedTwo;
     
-    float* mCircularBufferRightTwo;
-    float* mCircularBufferLeftTwo;
+ //   float* mCircularBufferRightTwo;
+  //  float* mCircularBufferLeftTwo;
     
     int mCircularBufferWriteHeadTwo;
     
@@ -192,12 +215,12 @@ private:
     float mLastInputGainThree  = 0.0f;
     float mDelayTimeSmoothedThree;
     
-    float* mCircularBufferRightThree;
-    float* mCircularBufferLeftThree;
+ //   float* mCircularBufferRightThree;
+ //   float* mCircularBufferLeftThree;
     
     int mCircularBufferWriteHeadThree;
     
-
+    
     
     float mfeedbackLeftThree;
     float mfeedbackRightThree;
@@ -205,8 +228,8 @@ private:
     float mLastInputGainFour  = 0.0f;
     float mDelayTimeSmoothedFour;
     
-    float* mCircularBufferRightFour;
-    float* mCircularBufferLeftFour;
+ //   float* mCircularBufferRightFour;
+ //   float* mCircularBufferLeftFour;
     
     int mCircularBufferWriteHeadFour;
     
@@ -217,12 +240,12 @@ private:
     float mLastInputGainFive  = 0.0f;
     float mDelayTimeSmoothedFive;
     
-    float* mCircularBufferRightFive;
-    float* mCircularBufferLeftFive;
+ //   float* mCircularBufferRightFive;
+ //   float* mCircularBufferLeftFive;
     
     int mCircularBufferWriteHeadFive;
     
-
+    
     
     float mfeedbackLeftFive;
     float mfeedbackRightFive;
@@ -230,12 +253,12 @@ private:
     float mLastInputGainSix  = 0.0f;
     float mDelayTimeSmoothedSix;
     
-    float* mCircularBufferRightSix;
-    float* mCircularBufferLeftSix;
+//    float* mCircularBufferRightSix;
+//    float* mCircularBufferLeftSix;
     
     int mCircularBufferWriteHeadSix;
     
-
+    
     
     float mfeedbackLeftSix;
     float mfeedbackRightSix;
@@ -244,12 +267,12 @@ private:
     float mLastInputGainSeven  = 0.0f;
     float mDelayTimeSmoothedSeven;
     
-    float* mCircularBufferRightSeven;
-    float* mCircularBufferLeftSeven;
+ //   float* mCircularBufferRightSeven;
+//    float* mCircularBufferLeftSeven;
     
     int mCircularBufferWriteHeadSeven;
     
-
+    
     
     float mfeedbackLeftSeven;
     float mfeedbackRightSeven;
@@ -259,25 +282,13 @@ private:
     float mLastInputGainEight  = 0.0f;
     float mDelayTimeSmoothedEight;
     
-    float* mCircularBufferRightEight;
-    float* mCircularBufferLeftEight;
+ //   float* mCircularBufferRightEight;
+ //   float* mCircularBufferLeftEight;
     
     int mCircularBufferWriteHeadEight;
     
-
+    
     
     float mfeedbackLeftEight;
     float mfeedbackRightEight;
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-    //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Waylomod2020v4AudioProcessor)
 };
