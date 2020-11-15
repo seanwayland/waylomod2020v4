@@ -30,11 +30,18 @@ private:
     Waylomod2020v4AudioProcessor& audioProcessor;
     
     juce::Slider mDelayTimeSlider;
+    juce::Label timeLabel;
     juce::Slider mDryGainSlider;
+    juce::Label dryGainLabel;
     juce::Slider mDelayOneGainSlider;
+    juce::Label delayGainLabel;
     juce::Slider mDelayOneModDepthSlider;
+    juce::Label depthLabel;
     juce::Slider mDelayOneModRateSlider;
+    juce::Label RateLabel;
     juce::Slider mDelayOneFeedbackSlider;
+    juce::Label FeedbackLabel;
+    juce::Label TitleLabel;
     
     juce::Slider mDelayTwoTimeSlider;
     juce::Slider mDelayTwoGainSlider;
