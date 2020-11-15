@@ -19,15 +19,23 @@ class Waylomod2020v4AudioProcessorEditor  : public juce::AudioProcessorEditor
 public:
     Waylomod2020v4AudioProcessorEditor (Waylomod2020v4AudioProcessor&);
     ~Waylomod2020v4AudioProcessorEditor() override;
+    
+    
+    
+
 
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void setSliders();
+   
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     Waylomod2020v4AudioProcessor& audioProcessor;
+    
+    juce::TextButton updateSlidersButton;
     
     juce::Slider mDelayTimeSlider;
     juce::Label timeLabel;

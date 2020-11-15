@@ -19,10 +19,23 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     auto& params = processor.getParameters();
     
     
+    
+    addAndMakeVisible (updateSlidersButton);
+    updateSlidersButton.setButtonText ("Update Slider Positions after preset load");
+    updateSlidersButton.onClick = [this] { setSliders(); };
+    updateSlidersButton.setBounds(1200, 50 , 200, 100);
+    
+    
+    
+    
+
+    
+    
     juce::AudioParameterFloat* delayTimeParameter = (juce::AudioParameterFloat*)params.getUnchecked(0);
     mDelayTimeSlider.setBounds(200, 100 , 200, 200);
     timeLabel.setBounds(75,100,200,200);
     timeLabel.setText("Delay Time", juce::dontSendNotification);
+    addAndMakeVisible (timeLabel);
     addAndMakeVisible(timeLabel);
     
     
@@ -541,6 +554,7 @@ Waylomod2020v4AudioProcessorEditor::~Waylomod2020v4AudioProcessorEditor()
 {
 }
 
+
 //==============================================================================
 void Waylomod2020v4AudioProcessorEditor::paint (juce::Graphics& g)
 {
@@ -557,6 +571,112 @@ void Waylomod2020v4AudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     
+}
+
+
+void Waylomod2020v4AudioProcessorEditor::setSliders(){
+    
+    auto& params = processor.getParameters();
+    juce::AudioParameterFloat* dryGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(1);
+    mDryGainSlider.setValue(*dryGainParameter2);
+    
+    juce::AudioParameterFloat* delayTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(0);
+    mDelayTimeSlider.setValue(*delayTimeParameter2);
+
+    juce::AudioParameterFloat* delayOneGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(2);
+    mDelayOneGainSlider.setValue(*delayOneGainParameter2);
+    
+    juce::AudioParameterFloat* delayOneModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(3);
+    mDelayOneModDepthSlider.setValue(*delayOneModDpethParameter2);
+    juce::AudioParameterFloat* delayOneModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(4);
+    mDelayOneModDepthSlider.setValue(*delayOneModRateParameter2);
+    juce::AudioParameterFloat* delayOneFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(5);
+    mDelayOneFeedbackSlider.setValue(*delayOneFeedbackParameter2);
+    juce::AudioParameterFloat* delayTwoTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(6);
+    mDelayTwoGainSlider.setValue(*delayTwoTimeParameter2);
+    juce::AudioParameterFloat* delayTwoGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(7);
+    mDelayTwoGainSlider.setValue(*delayTwoGainParameter2);
+    juce::AudioParameterFloat* delayTwoModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(8);
+    mDelayTwoModDepthSlider.setValue(*delayTwoModDpethParameter2);
+    juce::AudioParameterFloat* delayTwoModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(9);
+    mDelayTwoModRateSlider.setValue(*delayTwoModRateParameter2);
+    juce::AudioParameterFloat* delayTwoFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(10);
+    mDelayTwoFeedbackSlider.setValue(*delayTwoFeedbackParameter2);
+    juce::AudioParameterFloat* delayThreeTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(11);
+    mDelayThreeTimeSlider.setValue(*delayThreeTimeParameter2);
+    juce::AudioParameterFloat* delayThreeGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(12);
+    mDelayThreeGainSlider.setValue(*delayThreeGainParameter2);
+    juce::AudioParameterFloat* delayThreeModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(13);
+    mDelayThreeModDepthSlider.setValue(*delayThreeModDpethParameter2);
+    juce::AudioParameterFloat* delayThreeModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(14);
+    mDelayThreeModRateSlider.setValue(*delayThreeModRateParameter2);
+    juce::AudioParameterFloat* delayThreeFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(15);
+    mDelayThreeFeedbackSlider.setValue(*delayThreeFeedbackParameter2);
+    juce::AudioParameterFloat* delayFourTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(16);
+    mDelayFourTimeSlider.setValue(*delayFourTimeParameter2);
+    juce::AudioParameterFloat* delayFourGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(17);
+    mDelayFourGainSlider.setValue(*delayFourGainParameter2);
+    juce::AudioParameterFloat* delayFourModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(18);
+    mDelayFourModDepthSlider.setValue(*delayFourModDpethParameter2);
+    juce::AudioParameterFloat* delayFourModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(19);
+    mDelayFourModRateSlider.setValue(*delayFourModRateParameter2);
+    juce::AudioParameterFloat* delayFourFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(20);
+    mDelayFourFeedbackSlider.setValue(*delayFourFeedbackParameter2);
+    juce::AudioParameterFloat* delayFiveTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(21);
+    mDelayFiveTimeSlider.setValue(*delayFiveTimeParameter2);
+    juce::AudioParameterFloat* delayFiveGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(22);
+    mDelayFiveGainSlider.setValue(*delayFiveGainParameter2);
+    juce::AudioParameterFloat* delayFiveModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(23);
+    mDelayFiveModDepthSlider.setValue(*delayFiveModDpethParameter2);
+    juce::AudioParameterFloat* delayFiveModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(24);
+    mDelayFiveModRateSlider.setValue(*delayFiveModRateParameter2);
+    juce::AudioParameterFloat* delayFiveFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(25);
+    mDelayFiveFeedbackSlider.setValue(*delayFiveFeedbackParameter2);
+    juce::AudioParameterFloat* delaySixTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(26);
+    mDelaySixTimeSlider.setValue(*delaySixTimeParameter2);
+    juce::AudioParameterFloat* delaySixGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(27);
+    mDelaySixGainSlider.setValue(*delaySixGainParameter2);
+    juce::AudioParameterFloat* delaySixModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(28);
+    mDelaySixModDepthSlider.setValue(*delaySixModDpethParameter2);
+    juce::AudioParameterFloat* delaySixModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(29);
+    mDelaySixModRateSlider.setValue(*delaySixModRateParameter2);
+    juce::AudioParameterFloat* delaySixFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(30);
+    mDelaySixFeedbackSlider.setValue(*delaySixFeedbackParameter2);
+    juce::AudioParameterFloat* delaySevenTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(31);
+    mDelaySevenTimeSlider.setValue(*delaySevenTimeParameter2);
+    juce::AudioParameterFloat* delaySevenGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(32);
+    mDelaySevenGainSlider.setValue(*delaySevenGainParameter2);
+    juce::AudioParameterFloat* delaySevenModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(33);
+    mDelaySevenModDepthSlider.setValue(*delaySevenModDpethParameter2);
+    juce::AudioParameterFloat* delaySevenModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(34);
+    mDelaySevenModRateSlider.setValue(*delaySevenModRateParameter2);
+    juce::AudioParameterFloat* delaySevenFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(35);
+    mDelaySevenFeedbackSlider.setValue(*delaySevenFeedbackParameter2);
+    juce::AudioParameterFloat* delayEightTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(36);
+    mDelayEightTimeSlider.setValue(*delayEightTimeParameter2);
+    juce::AudioParameterFloat* delayEightGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(37);
+    mDelayEightGainSlider.setValue(*delayEightGainParameter2);
+    juce::AudioParameterFloat* delayEightModDpethParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(38);
+    mDelayEightModDepthSlider.setValue(*delayEightModDpethParameter2);
+    juce::AudioParameterFloat* delayEightModRateParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(39);
+    mDelayEightModRateSlider.setValue(*delayEightModRateParameter2);
+    juce::AudioParameterFloat* delayEightFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(40);
+    mDelayEightFeedbackSlider.setValue(*delayEightFeedbackParameter2);
+     
+     
+    
+    
+    
+    
+    
+    
+    
     
     
 }
+
+
+
+
+
+

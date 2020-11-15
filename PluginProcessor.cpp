@@ -1163,12 +1163,22 @@ void Waylomod2020v4AudioProcessor::setStateInformation (const void* data, int si
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    
+    
+    
     std::unique_ptr<juce::XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
     
     if (xml.get() != nullptr && xml->hasTagName("waylomod2020"))
     {
-        *mDryGainParameter = xml->getDoubleAttribute("drygain");
         
+        
+        
+        *mDryGainParameter = xml->getDoubleAttribute("drygain");
+        //this->setGainSlider(xml->getDoubleAttribute("drygain"));
+        
+        
+    
         *mDelayOneTimeParameter = xml->getDoubleAttribute("delayonetime");
         *mDelayOneGainParameter = xml->getDoubleAttribute("delayonegain");
         *mDelayOneModDepthParameter = xml->getDoubleAttribute("delayonedepth");
@@ -1217,6 +1227,12 @@ void Waylomod2020v4AudioProcessor::setStateInformation (const void* data, int si
         *mDelayEightModRateParameter = xml->getDoubleAttribute("delayeightrate");
         *mDelayEightFeedbackParameter = xml->getDoubleAttribute("delayeightfeedback");
     }
+    
+    
+    
+    
+    
+    
 }
 
 //==============================================================================
