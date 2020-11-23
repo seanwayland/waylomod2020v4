@@ -1,10 +1,11 @@
+
 /*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ This file contains the basic framework code for a JUCE plugin processor.
+ 
+ ==============================================================================
+ */
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -14,19 +15,23 @@
 //==============================================================================
 Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+: AudioProcessor (BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+                  .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+#endif
+                  .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+                  )
 #endif
 {
     
     addParameter(mDelayOneTimeParameter = new juce::AudioParameterFloat("delay one delaytime", "Delay One Delay Time", 0.0001, MAX_DELAY_TIME, 0.001));
-    addParameter(mDryGainParameter = new juce::AudioParameterFloat("drygain", "Dry Gain", 0.0, 1.0 , 0.5));
+    //addParameter(mDryGainParameter = new juce::AudioParameterFloat("drygain", "Dry Gain", 0.0f, 1.0f , 0.5f));
+    addParameter (mDryGainParameter = new juce::AudioParameterFloat ("gain",                                      // parameter ID
+                                                        "Gain",                                      // parameter name
+                                                        juce::NormalisableRange<float> (0.0f, 1.0f), // parameter range
+                                                        0.5f));                                      // default value
     addParameter(mDelayOneGainParameter = new juce::AudioParameterFloat("delayonegain", "Delay One Gain", 0.0, 1.0 , 0.5));
     addParameter(mDelayOneModDepthParameter = new juce::AudioParameterFloat("delayonemodDepth", "Delay One Mod Depth", 0, 1, 0.2));
     addParameter(mDelayOneModRateParameter = new juce::AudioParameterFloat("delayonemodRate", "Delay One Mod Rate", 0, 1, 0.15));
@@ -78,8 +83,8 @@ Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
     
     
     
-   // mCircularBufferLeft = nullptr;
-   // mCircularBufferRight = nullptr;
+    // mCircularBufferLeft = nullptr;
+    // mCircularBufferRight = nullptr;
     mCircularBufferWriteHead = 0;
     
     mCircularBufferLength = 0;
@@ -87,51 +92,51 @@ Waylomod2020v4AudioProcessor::Waylomod2020v4AudioProcessor()
     mDelayTimeInSamples = 0.0;
     mDelayReadHead = 0.0;
     
-   // mCircularBufferLeftTwo = nullptr;
-  //  mCircularBufferRightTwo = nullptr;
+    // mCircularBufferLeftTwo = nullptr;
+    //  mCircularBufferRightTwo = nullptr;
     mCircularBufferWriteHeadTwo = 0;
     
     mDelayTwoTimeInSamples = 0.0;
     mDelayTwoReadHead = 0.0;
     
-  //  mCircularBufferLeftThree = nullptr;
-  //  mCircularBufferRightThree = nullptr;
+    //  mCircularBufferLeftThree = nullptr;
+    //  mCircularBufferRightThree = nullptr;
     mCircularBufferWriteHeadThree = 0;
     
     
     mDelayThreeTimeInSamples = 0.0;
     mDelayThreeReadHead = 0.0;
     
-  //  mCircularBufferLeftFour = nullptr;
-  //  mCircularBufferRightFour = nullptr;
+    //  mCircularBufferLeftFour = nullptr;
+    //  mCircularBufferRightFour = nullptr;
     mCircularBufferWriteHeadFour = 0;
     
     mDelayFourTimeInSamples = 0.0;
     mDelayFourReadHead = 0.0;
     
-  //  mCircularBufferLeftFive = nullptr;
-  //  mCircularBufferRightFive = nullptr;
+    //  mCircularBufferLeftFive = nullptr;
+    //  mCircularBufferRightFive = nullptr;
     mCircularBufferWriteHeadFive = 0;
     
     mDelayFiveTimeInSamples = 0.0;
     mDelayFiveReadHead = 0.0;
     
-  //  mCircularBufferLeftSix = nullptr;
-  //  mCircularBufferRightSix = nullptr;
+    //  mCircularBufferLeftSix = nullptr;
+    //  mCircularBufferRightSix = nullptr;
     mCircularBufferWriteHeadSix = 0;
     
     mDelaySixTimeInSamples = 0.0;
     mDelaySixReadHead = 0.0;
     
-  //  mCircularBufferLeftSeven = nullptr;
-  //  mCircularBufferRightSeven = nullptr;
+    //  mCircularBufferLeftSeven = nullptr;
+    //  mCircularBufferRightSeven = nullptr;
     mCircularBufferWriteHeadSeven = 0;
     
     mDelaySevenTimeInSamples = 0.0;
     mDelaySevenReadHead = 0.0;
     
-  //  mCircularBufferLeftEight = nullptr;
-  //  mCircularBufferRightEight = nullptr;
+    //  mCircularBufferLeftEight = nullptr;
+    //  mCircularBufferRightEight = nullptr;
     mCircularBufferWriteHeadEight = 0;
     
     mDelayEightTimeInSamples = 0.0;
@@ -193,103 +198,103 @@ Waylomod2020v4AudioProcessor::~Waylomod2020v4AudioProcessor()
 {
     
     /**
-    
-    if (mCircularBufferLeft != nullptr ) {
-        delete [] mCircularBufferLeft;
-        mCircularBufferLeft = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRight != nullptr ) {
-        delete [] mCircularBufferRight;
-        mCircularBufferRight = nullptr;
-    }
-    
-    if (mCircularBufferLeftTwo != nullptr ) {
-        delete [] mCircularBufferLeftTwo;
-        mCircularBufferLeftTwo = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightTwo != nullptr ) {
-        delete [] mCircularBufferRightTwo;
-        mCircularBufferRightTwo = nullptr;
-    }
-    
-    if (mCircularBufferLeftThree != nullptr ) {
-        delete [] mCircularBufferLeftThree;
-        mCircularBufferLeftThree = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightThree != nullptr ) {
-        delete [] mCircularBufferRightThree;
-        mCircularBufferRightThree = nullptr;
-    }
-    
-    if (mCircularBufferLeftFour != nullptr ) {
-        delete [] mCircularBufferLeftFour;
-        mCircularBufferLeftFour = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightFour != nullptr ) {
-        delete [] mCircularBufferRightFour;
-        mCircularBufferRightFour= nullptr;
-    }
-    
-    if (mCircularBufferLeftFive != nullptr ) {
-        delete [] mCircularBufferLeftFive;
-        mCircularBufferLeftFive = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightFive != nullptr ) {
-        delete [] mCircularBufferRightFive;
-        mCircularBufferRightFive= nullptr;
-    }
-    
-    if (mCircularBufferLeftSix != nullptr ) {
-        delete [] mCircularBufferLeftSix;
-        mCircularBufferLeftSix = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightSix != nullptr ) {
-        delete [] mCircularBufferRightSix;
-        mCircularBufferRightSix= nullptr;
-        
-    }
-    
-    if (mCircularBufferLeftSeven != nullptr ) {
-        delete [] mCircularBufferLeftSeven;
-        mCircularBufferLeftSeven = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightSeven != nullptr ) {
-        delete [] mCircularBufferRightSeven;
-        mCircularBufferRightSeven= nullptr;
-    }
-    
-    if (mCircularBufferLeftEight != nullptr ) {
-        delete [] mCircularBufferLeftEight;
-        mCircularBufferLeftEight = nullptr;
-    }
-    
-    
-    
-    if (mCircularBufferRightEight != nullptr ) {
-        delete [] mCircularBufferRightEight;
-        mCircularBufferRightEight= nullptr;
-    }
+     
+     if (mCircularBufferLeft != nullptr ) {
+     delete [] mCircularBufferLeft;
+     mCircularBufferLeft = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRight != nullptr ) {
+     delete [] mCircularBufferRight;
+     mCircularBufferRight = nullptr;
+     }
+     
+     if (mCircularBufferLeftTwo != nullptr ) {
+     delete [] mCircularBufferLeftTwo;
+     mCircularBufferLeftTwo = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightTwo != nullptr ) {
+     delete [] mCircularBufferRightTwo;
+     mCircularBufferRightTwo = nullptr;
+     }
+     
+     if (mCircularBufferLeftThree != nullptr ) {
+     delete [] mCircularBufferLeftThree;
+     mCircularBufferLeftThree = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightThree != nullptr ) {
+     delete [] mCircularBufferRightThree;
+     mCircularBufferRightThree = nullptr;
+     }
+     
+     if (mCircularBufferLeftFour != nullptr ) {
+     delete [] mCircularBufferLeftFour;
+     mCircularBufferLeftFour = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightFour != nullptr ) {
+     delete [] mCircularBufferRightFour;
+     mCircularBufferRightFour= nullptr;
+     }
+     
+     if (mCircularBufferLeftFive != nullptr ) {
+     delete [] mCircularBufferLeftFive;
+     mCircularBufferLeftFive = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightFive != nullptr ) {
+     delete [] mCircularBufferRightFive;
+     mCircularBufferRightFive= nullptr;
+     }
+     
+     if (mCircularBufferLeftSix != nullptr ) {
+     delete [] mCircularBufferLeftSix;
+     mCircularBufferLeftSix = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightSix != nullptr ) {
+     delete [] mCircularBufferRightSix;
+     mCircularBufferRightSix= nullptr;
+     
+     }
+     
+     if (mCircularBufferLeftSeven != nullptr ) {
+     delete [] mCircularBufferLeftSeven;
+     mCircularBufferLeftSeven = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightSeven != nullptr ) {
+     delete [] mCircularBufferRightSeven;
+     mCircularBufferRightSeven= nullptr;
+     }
+     
+     if (mCircularBufferLeftEight != nullptr ) {
+     delete [] mCircularBufferLeftEight;
+     mCircularBufferLeftEight = nullptr;
+     }
+     
+     
+     
+     if (mCircularBufferRightEight != nullptr ) {
+     delete [] mCircularBufferRightEight;
+     mCircularBufferRightEight= nullptr;
+     }
      
      **/
     
@@ -303,29 +308,29 @@ const juce::String Waylomod2020v4AudioProcessor::getName() const
 
 bool Waylomod2020v4AudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
+#if JucePlugin_WantsMidiInput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool Waylomod2020v4AudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
+#if JucePlugin_ProducesMidiOutput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool Waylomod2020v4AudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
+#if JucePlugin_IsMidiEffect
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 double Waylomod2020v4AudioProcessor::getTailLengthSeconds() const
@@ -336,7 +341,7 @@ double Waylomod2020v4AudioProcessor::getTailLengthSeconds() const
 int Waylomod2020v4AudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+    // so this should be at least 1, even if you're not really implementing programs.
 }
 
 int Waylomod2020v4AudioProcessor::getCurrentProgram()
@@ -392,7 +397,7 @@ void Waylomod2020v4AudioProcessor::prepareToPlay (double sampleRate, int samples
     
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-   // mCircularBufferLength = sampleRate*MAX_DELAY_TIME;
+    // mCircularBufferLength = sampleRate*MAX_DELAY_TIME;
     mCircularBufferLength = 96000;
     
     
@@ -402,153 +407,153 @@ void Waylomod2020v4AudioProcessor::prepareToPlay (double sampleRate, int samples
     // initialisation that you need..
     
     /***
-    if (mCircularBufferLeft != nullptr ) {
-        delete [] mCircularBufferLeft;
-        mCircularBufferLeft = nullptr;
-    }
-    
-    if (mCircularBufferLeft == nullptr ) {
-        mCircularBufferLeft = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRight != nullptr ) {
-        delete [] mCircularBufferRight;
-        mCircularBufferRight = nullptr;
-    }
-    
-    if (mCircularBufferRight == nullptr ) {
-        mCircularBufferRight = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferLeftTwo != nullptr ) {
-        delete [] mCircularBufferLeftTwo;
-        mCircularBufferLeftTwo = nullptr;
-    }
-    
-    if (mCircularBufferLeftTwo == nullptr ) {
-        mCircularBufferLeftTwo = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightTwo != nullptr ) {
-        delete [] mCircularBufferRightTwo;
-        mCircularBufferRightTwo = nullptr;
-    }
-    
-    if (mCircularBufferRightTwo == nullptr ) {
-        mCircularBufferRightTwo = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferLeftThree != nullptr ) {
-        delete [] mCircularBufferLeftThree;
-        mCircularBufferLeftThree = nullptr;
-    }
-    
-    if (mCircularBufferLeftThree == nullptr ) {
-        mCircularBufferLeftThree = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightThree != nullptr ) {
-        delete [] mCircularBufferRightThree;
-        mCircularBufferRightThree = nullptr;
-    }
-    
-    if (mCircularBufferRightThree == nullptr ) {
-        mCircularBufferRightThree = new float[mCircularBufferLength];
-    }
-    
-    
-    if (mCircularBufferLeftFour != nullptr ) {
-        delete [] mCircularBufferLeftFour;
-        mCircularBufferLeftFour = nullptr;
-    }
-    
-    if (mCircularBufferLeftFour == nullptr ) {
-        mCircularBufferLeftFour = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightFour != nullptr ) {
-        delete [] mCircularBufferRightFour;
-        mCircularBufferRightFour = nullptr;
-    }
-    
-    if (mCircularBufferRightFour == nullptr ) {
-        mCircularBufferRightFour = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferLeftFive != nullptr ) {
-        delete [] mCircularBufferLeftFive;
-        mCircularBufferLeftFive = nullptr;
-    }
-    
-    if (mCircularBufferLeftFive == nullptr ) {
-        mCircularBufferLeftFive = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightFive != nullptr ) {
-        delete [] mCircularBufferRightFive;
-        mCircularBufferRightFive = nullptr;
-    }
-    
-    if (mCircularBufferRightFive == nullptr ) {
-        mCircularBufferRightFive = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferLeftSix != nullptr ) {
-        delete [] mCircularBufferLeftSix;
-        mCircularBufferLeftSix = nullptr;
-    }
-    
-    if (mCircularBufferLeftSix == nullptr ) {
-        mCircularBufferLeftSix = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightSix != nullptr ) {
-        delete [] mCircularBufferRightSix;
-        mCircularBufferRightSix = nullptr;
-    }
-    
-    if (mCircularBufferRightSix == nullptr ) {
-        mCircularBufferRightSix = new float[mCircularBufferLength];
-    }
-    
-    
-    
-    if (mCircularBufferLeftSeven != nullptr ) {
-        delete [] mCircularBufferLeftSeven;
-        mCircularBufferLeftSeven = nullptr;
-    }
-    
-    if (mCircularBufferLeftSeven == nullptr ) {
-        mCircularBufferLeftSeven = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightSeven != nullptr ) {
-        delete [] mCircularBufferRightSeven;
-        mCircularBufferRightSeven = nullptr;
-    }
-    
-    if (mCircularBufferRightSeven == nullptr ) {
-        mCircularBufferRightSeven = new float[mCircularBufferLength];
-    }
-    
-    
-    if (mCircularBufferLeftEight != nullptr ) {
-        delete [] mCircularBufferLeftEight;
-        mCircularBufferLeftEight = nullptr;
-    }
-    
-    if (mCircularBufferLeftEight == nullptr ) {
-        mCircularBufferLeftEight = new float[mCircularBufferLength];
-    }
-    
-    if (mCircularBufferRightEight != nullptr ) {
-        delete [] mCircularBufferRightEight;
-        mCircularBufferRightEight = nullptr;
-    }
-    
-    if (mCircularBufferRightEight == nullptr ) {
-        mCircularBufferRightEight = new float[mCircularBufferLength];
-    }
+     if (mCircularBufferLeft != nullptr ) {
+     delete [] mCircularBufferLeft;
+     mCircularBufferLeft = nullptr;
+     }
+     
+     if (mCircularBufferLeft == nullptr ) {
+     mCircularBufferLeft = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRight != nullptr ) {
+     delete [] mCircularBufferRight;
+     mCircularBufferRight = nullptr;
+     }
+     
+     if (mCircularBufferRight == nullptr ) {
+     mCircularBufferRight = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferLeftTwo != nullptr ) {
+     delete [] mCircularBufferLeftTwo;
+     mCircularBufferLeftTwo = nullptr;
+     }
+     
+     if (mCircularBufferLeftTwo == nullptr ) {
+     mCircularBufferLeftTwo = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightTwo != nullptr ) {
+     delete [] mCircularBufferRightTwo;
+     mCircularBufferRightTwo = nullptr;
+     }
+     
+     if (mCircularBufferRightTwo == nullptr ) {
+     mCircularBufferRightTwo = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferLeftThree != nullptr ) {
+     delete [] mCircularBufferLeftThree;
+     mCircularBufferLeftThree = nullptr;
+     }
+     
+     if (mCircularBufferLeftThree == nullptr ) {
+     mCircularBufferLeftThree = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightThree != nullptr ) {
+     delete [] mCircularBufferRightThree;
+     mCircularBufferRightThree = nullptr;
+     }
+     
+     if (mCircularBufferRightThree == nullptr ) {
+     mCircularBufferRightThree = new float[mCircularBufferLength];
+     }
+     
+     
+     if (mCircularBufferLeftFour != nullptr ) {
+     delete [] mCircularBufferLeftFour;
+     mCircularBufferLeftFour = nullptr;
+     }
+     
+     if (mCircularBufferLeftFour == nullptr ) {
+     mCircularBufferLeftFour = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightFour != nullptr ) {
+     delete [] mCircularBufferRightFour;
+     mCircularBufferRightFour = nullptr;
+     }
+     
+     if (mCircularBufferRightFour == nullptr ) {
+     mCircularBufferRightFour = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferLeftFive != nullptr ) {
+     delete [] mCircularBufferLeftFive;
+     mCircularBufferLeftFive = nullptr;
+     }
+     
+     if (mCircularBufferLeftFive == nullptr ) {
+     mCircularBufferLeftFive = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightFive != nullptr ) {
+     delete [] mCircularBufferRightFive;
+     mCircularBufferRightFive = nullptr;
+     }
+     
+     if (mCircularBufferRightFive == nullptr ) {
+     mCircularBufferRightFive = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferLeftSix != nullptr ) {
+     delete [] mCircularBufferLeftSix;
+     mCircularBufferLeftSix = nullptr;
+     }
+     
+     if (mCircularBufferLeftSix == nullptr ) {
+     mCircularBufferLeftSix = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightSix != nullptr ) {
+     delete [] mCircularBufferRightSix;
+     mCircularBufferRightSix = nullptr;
+     }
+     
+     if (mCircularBufferRightSix == nullptr ) {
+     mCircularBufferRightSix = new float[mCircularBufferLength];
+     }
+     
+     
+     
+     if (mCircularBufferLeftSeven != nullptr ) {
+     delete [] mCircularBufferLeftSeven;
+     mCircularBufferLeftSeven = nullptr;
+     }
+     
+     if (mCircularBufferLeftSeven == nullptr ) {
+     mCircularBufferLeftSeven = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightSeven != nullptr ) {
+     delete [] mCircularBufferRightSeven;
+     mCircularBufferRightSeven = nullptr;
+     }
+     
+     if (mCircularBufferRightSeven == nullptr ) {
+     mCircularBufferRightSeven = new float[mCircularBufferLength];
+     }
+     
+     
+     if (mCircularBufferLeftEight != nullptr ) {
+     delete [] mCircularBufferLeftEight;
+     mCircularBufferLeftEight = nullptr;
+     }
+     
+     if (mCircularBufferLeftEight == nullptr ) {
+     mCircularBufferLeftEight = new float[mCircularBufferLength];
+     }
+     
+     if (mCircularBufferRightEight != nullptr ) {
+     delete [] mCircularBufferRightEight;
+     mCircularBufferRightEight = nullptr;
+     }
+     
+     if (mCircularBufferRightEight == nullptr ) {
+     mCircularBufferRightEight = new float[mCircularBufferLength];
+     }
      
      **/
     
@@ -600,24 +605,24 @@ void Waylomod2020v4AudioProcessor::releaseResources()
 #ifndef JucePlugin_PreferredChannelConfigurations
 bool Waylomod2020v4AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-  #if JucePlugin_IsMidiEffect
+#if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
     return true;
-  #else
+#else
     // This is the place where you check if the layout is supported.
     // In this template code we only support mono or stereo.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+        && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
-
+    
     // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
+#if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
-   #endif
-
+#endif
+    
     return true;
-  #endif
+#endif
 }
 #endif
 
@@ -626,7 +631,7 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-
+    
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
@@ -636,46 +641,46 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-
+    
     /***
-    memset(mCircularBufferLeft, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeft));
-    memset(mCircularBufferRight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRight));
-    memset(mCircularBufferLeftTwo, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftTwo));
-    memset(mCircularBufferRightTwo, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightTwo));
-    memset(mCircularBufferLeftThree, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftThree));
-    memset(mCircularBufferRightThree, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightThree));
-    memset(mCircularBufferLeftFour, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftFour));
-    memset(mCircularBufferRightFour, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightFour));
-    memset(mCircularBufferLeftFive, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftFive));
-    memset(mCircularBufferRightFive, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightFive));
-    memset(mCircularBufferLeftSix, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftSix));
-    memset(mCircularBufferRightSix, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightSix));
-    memset(mCircularBufferLeftSeven, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftSeven));
-    memset(mCircularBufferRightSeven, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightSeven));
-    memset(mCircularBufferLeftEight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftEight));
-    memset(mCircularBufferRightEight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightEight));
+     memset(mCircularBufferLeft, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeft));
+     memset(mCircularBufferRight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRight));
+     memset(mCircularBufferLeftTwo, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftTwo));
+     memset(mCircularBufferRightTwo, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightTwo));
+     memset(mCircularBufferLeftThree, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftThree));
+     memset(mCircularBufferRightThree, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightThree));
+     memset(mCircularBufferLeftFour, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftFour));
+     memset(mCircularBufferRightFour, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightFour));
+     memset(mCircularBufferLeftFive, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftFive));
+     memset(mCircularBufferRightFive, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightFive));
+     memset(mCircularBufferLeftSix, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftSix));
+     memset(mCircularBufferRightSix, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightSix));
+     memset(mCircularBufferLeftSeven, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftSeven));
+     memset(mCircularBufferRightSeven, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightSeven));
+     memset(mCircularBufferLeftEight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferLeftEight));
+     memset(mCircularBufferRightEight, 0.0, mCircularBufferLength*sizeof(*mCircularBufferRightEight));
      ***/
     
     int sr = int(getSampleRate());
     int md = int(MAX_DELAY_TIME);
     int bufferlength = 96000;
-
+    
     /***
-    float mCircularBufferRight[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
-    float mCircularBufferLeftTwo[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
-    float mCircularBufferRightTwo[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
-    float mCircularBufferLeftThree[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
-    float mCircularBufferRightThree[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightFour[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightFour[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferLeftFive[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightFive[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferLeftSix[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightSix[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightSeven[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightSeven[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightEight[MAX_DELAY_TIME*getSampleRate()] = { 0 };
-    float mCircularBufferRightEight[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRight[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
+     float mCircularBufferLeftTwo[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
+     float mCircularBufferRightTwo[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
+     float mCircularBufferLeftThree[int(MAX_DELAY_TIME*getSampleRate())] = { 0 };
+     float mCircularBufferRightThree[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightFour[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightFour[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferLeftFive[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightFive[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferLeftSix[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightSix[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightSeven[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightSeven[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightEight[MAX_DELAY_TIME*getSampleRate()] = { 0 };
+     float mCircularBufferRightEight[MAX_DELAY_TIME*getSampleRate()] = { 0 };
      ***/
     
     
@@ -1092,7 +1097,7 @@ void Waylomod2020v4AudioProcessor::processBlock (juce::AudioBuffer<float>& buffe
     
     
     // end process block
-
+    
 }
 
 //==============================================================================
@@ -1178,7 +1183,7 @@ void Waylomod2020v4AudioProcessor::setStateInformation (const void* data, int si
         //this->setGainSlider(xml->getDoubleAttribute("drygain"));
         
         
-    
+        
         *mDelayOneTimeParameter = xml->getDoubleAttribute("delayonetime");
         *mDelayOneGainParameter = xml->getDoubleAttribute("delayonegain");
         *mDelayOneModDepthParameter = xml->getDoubleAttribute("delayonedepth");
