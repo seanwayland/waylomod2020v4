@@ -1,10 +1,11 @@
+
 /*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ This file contains the basic framework code for a JUCE plugin editor.
+ 
+ ==============================================================================
+ */
 
 #pragma once
 
@@ -13,7 +14,7 @@
 
 //==============================================================================
 /**
-*/
+ */
 class Waylomod2020v4AudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
@@ -22,14 +23,14 @@ public:
     
     
     
-
-
+    
+    
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
     void setSliders();
-   
-
+    
+    
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -100,6 +101,6 @@ private:
     juce::Slider mDelayEightModDepthSlider;
     juce::Slider mDelayEightModRateSlider;
     juce::Slider mDelayEightFeedbackSlider;
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Waylomod2020v4AudioProcessorEditor)
 };

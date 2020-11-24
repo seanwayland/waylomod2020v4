@@ -1,17 +1,18 @@
+
 /*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ This file contains the basic framework code for a JUCE plugin editor.
+ 
+ ==============================================================================
+ */
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
 //==============================================================================
 Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod2020v4AudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+: AudioProcessorEditor (&p), audioProcessor (p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -28,7 +29,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     
     
     
-
+    
     
     
     juce::AudioParameterFloat* delayTimeParameter = (juce::AudioParameterFloat*)params.getUnchecked(0);
@@ -39,7 +40,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     addAndMakeVisible(timeLabel);
     
     
-
+    
     
     mDelayTimeSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryVerticalDrag);
     mDelayTimeSlider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, 100, 50);
@@ -63,6 +64,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     mDryGainSlider.setRange(dryGainParameter->range.start, dryGainParameter->range.end);
     mDryGainSlider.setValue(*dryGainParameter);
     addAndMakeVisible(mDryGainSlider);
+    //mDryGainSlider.onValueChange = [this, dryGainParameter] { *dryGainParameter = mDryGainSlider.getValue(); };
     mDryGainSlider.onValueChange = [this, dryGainParameter] { *dryGainParameter = mDryGainSlider.getValue(); };
     mDryGainSlider.onDragStart = [dryGainParameter] {dryGainParameter->beginChangeGesture(); };
     mDryGainSlider.onDragEnd = [dryGainParameter] {dryGainParameter->endChangeGesture(); };
@@ -98,7 +100,7 @@ Waylomod2020v4AudioProcessorEditor::Waylomod2020v4AudioProcessorEditor (Waylomod
     mDelayOneModDepthSlider.onDragStart = [delayOneModDpethParameter] {delayOneModDpethParameter->beginChangeGesture(); };
     mDelayOneModDepthSlider.onDragEnd = [delayOneModDpethParameter] {delayOneModDpethParameter->endChangeGesture(); };
     
-
+    
     
     juce::AudioParameterFloat* delayOneModRateParameter = (juce::AudioParameterFloat*)params.getUnchecked(4);
     mDelayOneModRateSlider.setBounds(200, 400 , 200, 200);
@@ -560,10 +562,10 @@ void Waylomod2020v4AudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
+    
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-   
+    
 }
 
 void Waylomod2020v4AudioProcessorEditor::resized()
@@ -577,12 +579,19 @@ void Waylomod2020v4AudioProcessorEditor::resized()
 void Waylomod2020v4AudioProcessorEditor::setSliders(){
     
     auto& params = processor.getParameters();
+    
     juce::AudioParameterFloat* dryGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(1);
+    
     mDryGainSlider.setValue(*dryGainParameter2);
+    
+    
+    
+    
+    
     
     juce::AudioParameterFloat* delayTimeParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(0);
     mDelayTimeSlider.setValue(*delayTimeParameter2);
-
+    
     juce::AudioParameterFloat* delayOneGainParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(2);
     mDelayOneGainSlider.setValue(*delayOneGainParameter2);
     
@@ -662,8 +671,8 @@ void Waylomod2020v4AudioProcessorEditor::setSliders(){
     mDelayEightModRateSlider.setValue(*delayEightModRateParameter2);
     juce::AudioParameterFloat* delayEightFeedbackParameter2 = (juce::AudioParameterFloat*)params.getUnchecked(40);
     mDelayEightFeedbackSlider.setValue(*delayEightFeedbackParameter2);
-     
-     
+    
+    
     
     
     
@@ -674,7 +683,6 @@ void Waylomod2020v4AudioProcessorEditor::setSliders(){
     
     
 }
-
 
 
 

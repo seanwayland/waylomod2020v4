@@ -1,59 +1,60 @@
+
 /*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ This file contains the basic framework code for a JUCE plugin processor.
+ 
+ ==============================================================================
+ */
 
 #pragma once
-#define MAX_DELAY_TIME 2
+#define MAX_DELAY_TIME 1
 #include <JuceHeader.h>
 
 //==============================================================================
 /**
-*/
+ */
 class Waylomod2020v4AudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
     Waylomod2020v4AudioProcessor();
     ~Waylomod2020v4AudioProcessor() override;
-
+    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
-
-   #ifndef JucePlugin_PreferredChannelConfigurations
+    
+#ifndef JucePlugin_PreferredChannelConfigurations
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
-   #endif
-
+#endif
+    
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
-
+    
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
-
+    
     //==============================================================================
     const juce::String getName() const override;
-
+    
     bool acceptsMidi() const override;
     bool producesMidi() const override;
     bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
-
+    
     //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
     void setCurrentProgram (int index) override;
     const juce::String getProgramName (int index) override;
     void changeProgramName (int index, const juce::String& newName) override;
-
+    
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     float linInterp(float sample_x, float sample_x1, float inPhase);
-
+    
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Waylomod2020v4AudioProcessor)
@@ -187,10 +188,10 @@ private:
     float mLastInputGain  = 0.0f;
     float mDelayTimeSmoothed;
     
-   // float* mCircularBufferRight;
-  //  float* mCircularBufferLeft;
+    // float* mCircularBufferRight;
+    //  float* mCircularBufferLeft;
     
-
+    
     float arr2[10] = { 0 };
     
     int mCircularBufferWriteHead;
@@ -203,8 +204,8 @@ private:
     float mLastInputGainTwo  = 0.0f;
     float mDelayTimeSmoothedTwo;
     
- //   float* mCircularBufferRightTwo;
-  //  float* mCircularBufferLeftTwo;
+    //   float* mCircularBufferRightTwo;
+    //  float* mCircularBufferLeftTwo;
     
     int mCircularBufferWriteHeadTwo;
     
@@ -215,8 +216,8 @@ private:
     float mLastInputGainThree  = 0.0f;
     float mDelayTimeSmoothedThree;
     
- //   float* mCircularBufferRightThree;
- //   float* mCircularBufferLeftThree;
+    //   float* mCircularBufferRightThree;
+    //   float* mCircularBufferLeftThree;
     
     int mCircularBufferWriteHeadThree;
     
@@ -228,8 +229,8 @@ private:
     float mLastInputGainFour  = 0.0f;
     float mDelayTimeSmoothedFour;
     
- //   float* mCircularBufferRightFour;
- //   float* mCircularBufferLeftFour;
+    //   float* mCircularBufferRightFour;
+    //   float* mCircularBufferLeftFour;
     
     int mCircularBufferWriteHeadFour;
     
@@ -240,8 +241,8 @@ private:
     float mLastInputGainFive  = 0.0f;
     float mDelayTimeSmoothedFive;
     
- //   float* mCircularBufferRightFive;
- //   float* mCircularBufferLeftFive;
+    //   float* mCircularBufferRightFive;
+    //   float* mCircularBufferLeftFive;
     
     int mCircularBufferWriteHeadFive;
     
@@ -253,8 +254,8 @@ private:
     float mLastInputGainSix  = 0.0f;
     float mDelayTimeSmoothedSix;
     
-//    float* mCircularBufferRightSix;
-//    float* mCircularBufferLeftSix;
+    //    float* mCircularBufferRightSix;
+    //    float* mCircularBufferLeftSix;
     
     int mCircularBufferWriteHeadSix;
     
@@ -267,8 +268,8 @@ private:
     float mLastInputGainSeven  = 0.0f;
     float mDelayTimeSmoothedSeven;
     
- //   float* mCircularBufferRightSeven;
-//    float* mCircularBufferLeftSeven;
+    //   float* mCircularBufferRightSeven;
+    //    float* mCircularBufferLeftSeven;
     
     int mCircularBufferWriteHeadSeven;
     
@@ -282,8 +283,8 @@ private:
     float mLastInputGainEight  = 0.0f;
     float mDelayTimeSmoothedEight;
     
- //   float* mCircularBufferRightEight;
- //   float* mCircularBufferLeftEight;
+    //   float* mCircularBufferRightEight;
+    //   float* mCircularBufferLeftEight;
     
     int mCircularBufferWriteHeadEight;
     
